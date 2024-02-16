@@ -3,49 +3,72 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 
-url = "https://www.kinopoisk.ru/chance/"
-url_for_img = "https://www.kinopoisk.ru/"
 
-response = requests.get(url)
+class parsSettings():
+    def __init__(self):
+        self.url = "https://www.kinopoisk.ru/chance/"
+        self.url_for_img = "https://www.kinopoisk.ru/"
 
-driver = webdriver.Chrome()
-driver.get(url)
+        self.response = requests.get(self.url)
 
-button = driver.find_element(By.CLASS_NAME, "button")
-button.click()
-
-new_html = driver.page_source
-driver.quit()
-
-# HTML after button pressed
-soup = BeautifulSoup(new_html, "lxml")
-
-# Get Movie Data
-# Get Poster
-poster_div = soup.find("div", class_="poster")
-poster_img_href = poster_div.find("img")["src"]
-poster_img = url_for_img + poster_img_href
-
-# Get Film Name adn Genre
-film_name_div = soup.find("div", class_="filmName")
-film_name = film_name_div.find("a").text
-
-film_genre_div = soup.find("div", class_="gray")
-film_genre = film_genre_div.text.strip()
-
-# Get Rating
-film_rating_div = soup.find("div", class_="rating")
-film_rating_imb = film_rating_div.text.strip()
-
-# Get Description
-film_desc_div = soup.find("div", class_="syn")
-film_desc = film_desc_div.text.strip()
-
-get_data = soup.find_all("div", class_="movieBlock _NO_HIGHLIGHT_")
+        self.driver = webdriver.Chrome()
 
 
-print("Poster:", poster_img)
-print("Name:", film_name)
-print("Genre:", film_genre)
-print("Rating:", film_rating_imb)
-print("Description:", film_desc)
+class getRandomMovieData(parsSettings):
+    def __init__(self):
+        super().__init__()
+
+        # Movie Data #
+        self.poster_div = None
+        self.poster_img_href = None
+        self.poster_img = None
+
+        self.film_name_div = None
+        self.film_name = None
+
+        self.film_genre_div = None
+        self.film_genre = None
+
+        self.film_rating_div = None
+        self.film_rating_imb = None
+
+        self.film_desc_div = None
+        self.film_desc = None
+
+        # Create Driver #
+        self.driver.get(self.url)
+
+        # Find "Generate Movie" Button and click on here #
+        self.button = self.driver.find_element(By.CLASS_NAME, "button")
+        self.button.click()
+
+        # Create BS4 Object for new HTML after pressed button #
+        self.new_html = self.driver.page_source
+        self.driver.quit()
+
+        # HTML after button pressed
+        self.soup = BeautifulSoup(self.new_html, "lxml")
+
+    def get_full_rnd_movie_data(self):
+        # Get Movie Data
+        # Get Poster
+        self.poster_div = self.soup.find("div", class_="poster")
+        self.poster_img_href = self.poster_div.find("img")["src"]
+        self.poster_img = self.url_for_img + self.poster_img_href
+
+        # Get Film Name adn Genre
+        self.film_name_div = self.soup.find("div", class_="filmName")
+        self.film_name = self.film_name_div.find("a").text
+
+        self.film_genre_div = self.soup.find("div", class_="gray")
+        self.film_genre = self.film_genre_div.text.strip()
+
+        # Get Rating
+        self.film_rating_div = self.soup.find("div", class_="rating")
+        self.film_rating_imb = self.film_rating_div.text.strip()
+
+        # Get Description
+        self.film_desc_div = self.soup.find("div", class_="syn")
+        self.film_desc = self.film_desc_div.text.strip()
+
+
