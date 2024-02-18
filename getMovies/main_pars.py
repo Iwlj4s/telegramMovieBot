@@ -5,9 +5,6 @@ from selenium.webdriver.common.by import By
 import time
 
 
-user_input = input("Genre: ")
-
-
 class ParsSettings:
     def __init__(self):
         self.url = "https://www.kinopoisk.ru/chance/"
@@ -18,23 +15,81 @@ class ParsSettings:
 
         self.user_genre_key = None
         self.genres = {
-            '1750 ': 'Anime', '22': 'Biography',
-            '3': 'Action movie', '13': 'Western',
-            '19': 'Military', '17': 'Detective',
-            '456': 'Kids', '12': 'Documentary',
-            '8': 'Drama', '23': 'History',
-            '6': 'Comedy', '15': 'Short film',
-            '16': 'Crime', '7': 'Melodrama',
-            '21': 'Music', '14': 'Cartoon',
-            '9 ': 'Musical', '10': 'Adventure',
-            '11': 'Family', '24': 'Sport',
-            '4': 'Thriller', '1': 'Horror',
-            '2': 'Fantastic', '18': 'Film-Noir',
-            '5': 'Fantasy'
+            '1750': 'anime', '22': 'biography',
+            '3': 'action movie', '13': 'western',
+            '19': 'military', '17': 'detective',
+            '456': 'kids', '12': 'documentary',
+            '8': 'drama', '23': 'history',
+            '6': 'comedy', '15': 'short film',
+            '16': 'crime', '7': 'melodrama',
+            '21': 'music', '14': 'cartoon',
+            '9 ': 'musical', '10': 'adventure',
+            '11': 'family', '24': 'sport',
+            '4': 'thriller', '1': 'horror',
+            '2': 'fantastic', '18': 'film-noir',
+            '5': 'fantasy'
         }
 
 
-class GetRandomMovieData(ParsSettings):
+class Driver(ParsSettings):
+    def __init__(self):
+        super().__init__()
+        self.driver.get(self.url)
+
+        self.list = self.driver.find_element(By.ID, "genreListTitle")
+        self.button = self.driver.find_element(By.CLASS_NAME, "button")
+
+        self.new_html = None
+        self.soup = None
+
+    def find_user_gener(self, genre):
+        """
+        dict genre: keys == value in HTML || values == genres
+        :return: genre key by user input genre, like: Anime: 1750
+        """
+        print("User input: ", genre)
+        for key in self.genres:
+            if self.genres[key] == genre:
+                self.user_genre_key = key
+                print("Genre Key: ", self.user_genre_key)
+                return self.user_genre_key
+        print("No Same Gener")
+        return None
+
+    def get_rnd_movie(self):
+        """
+        click on "get movie" button
+        :return new HTML page with movie
+        """
+        self.button.click()
+        self.new_html = self.driver.page_source
+        self.soup = BeautifulSoup(self.new_html, "lxml")
+        self.driver.quit()
+        return self.soup
+
+    def get_rnd_gener_movie(self, u_genre):
+        """
+        u_gener => find_user_gener(gener)
+        :return new HTML page with movie
+        """
+        self.find_user_gener(u_genre)
+        self.list.click()
+
+        time.sleep(5)
+        print(self.user_genre_key)
+        self.driver.find_element(By.XPATH, f"//input[@value='{self.user_genre_key}']").click()
+
+        time.sleep(5)
+        self.button.click()
+
+        self.new_html = self.driver.page_source
+        self.soup = BeautifulSoup(self.new_html, "lxml")
+
+        self.driver.quit()
+        return self.soup
+
+
+class GetRandomMovieData(Driver, ParsSettings):
     def __init__(self):
         super().__init__()
         self.poster_div = None
@@ -53,59 +108,17 @@ class GetRandomMovieData(ParsSettings):
         self.film_desc_div = None
         self.film_desc = None
 
-        self.driver.get(self.url)
-
-        self.list = self.driver.find_element(By.ID, "genreListTitle")
-        self.button = self.driver.find_element(By.CLASS_NAME, "button")
-
-        self.new_html = None
-        self.soup = None
-
-    def find_user_genre(self, genre):
+    def get_movie_data(self, user_gener, genre=False):
         """
-        dict genre: keys == class <li> in HTML || values == genres
-        :return: genre key by user input genre, like: Anime: genre_1750
+        :param user_gener:  => get_rnd_gener_movie(u_gener)
+        :param genre: If false: get random movie with random genre Else: get random movie with selected genre
         """
-
-        for key in self.genres:
-            if self.genres[key] == genre:
-                self.user_genre_key = key
-                print("User Input:", user_input)
-                print("Genre Key: ", self.user_genre_key)
-                return self.user_genre_key
-        print("No Same Gener")
-        return None
-
-    def get_rnd_movie(self):
-        self.button.click()
-        self.new_html = self.driver.page_source
-        self.soup = BeautifulSoup(self.new_html, "lxml")
-        self.driver.quit()
-        return self.soup
-
-    def get_rnd_gener_movie(self):
-        self.find_user_genre(user_input)
-        self.list.click()
-
-        time.sleep(5)
-        self.driver.find_element(By.XPATH, f"//input[@value='{self.user_genre_key}']").click()
-
-        time.sleep(5)
-        self.button.click()
-
-        self.new_html = self.driver.page_source
-        self.soup = BeautifulSoup(self.new_html, "lxml")
-
-        self.driver.quit()
-        return self.soup
-
-    def get_full_rnd_movie_data(self, genre=False):
         self.soup = None
 
         if not genre:
             self.soup = self.get_rnd_movie()
         elif genre:
-            self.soup = self.get_rnd_gener_movie()
+            self.soup = self.get_rnd_gener_movie(user_gener)
 
         self.poster_div = self.soup.find("div", class_="poster")
         self.poster_img_href = self.poster_div.find("img")["src"]
@@ -123,13 +136,12 @@ class GetRandomMovieData(ParsSettings):
         self.film_desc_div = self.soup.find("div", class_="syn")
         self.film_desc = self.film_desc_div.text.strip()
 
-
-movie_data = GetRandomMovieData()
+# movie_data = GetRandomMovieData()
 
 # For now just switch False - for get full random movie and True - for genre random movie
-movie_data.get_full_rnd_movie_data(True)
+# movie_data.get_movie_data("Comedy", True)
 
-print("Movie Name:", movie_data.film_name)
-print("Genre:", movie_data.film_genre)
-print("Rating:", movie_data.film_rating_imb)
-print("Description:", movie_data.film_desc)
+# print("Movie Name:", movie_data.film_name)
+# print("Genre:", movie_data.film_genre)
+# print("Rating:", movie_data.film_rating_imb)
+# print("Description:", movie_data.film_desc)
