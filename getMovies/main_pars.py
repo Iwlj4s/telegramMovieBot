@@ -2,8 +2,7 @@ import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import time
 
 
 user_input = input("Genre: ")
@@ -19,19 +18,19 @@ class ParsSettings:
 
         self.user_genre_key = None
         self.genres = {
-            'genre_1750 ': 'Anime', 'genre_22 selectItem': 'biography',
-            'genre_3 selectItem': 'action movie', 'genre_13 selectItem': 'Western',
-            'genre_19 selectItem': 'Military', 'genre_17 selectItem': 'Detective',
-            'genre_456 selectItem': 'Kids', 'genre_12 selectItem': 'documentary',
-            'genre_8 selectItem': 'Drama', 'genre_23 selectItem': 'History',
-            'genre_6 selectItem': 'Comedy', 'genre_15 selectItem': 'short film',
-            'genre_16 selectItem': 'Crime', 'genre_7 selectItem': 'Melodrama',
-            'genre_21 selectItem': 'Music', 'genre_14 selectItem': 'Cartoon',
-            'genre_9 selectItem': 'Musical', 'genre_10 selectItem': 'Adventure',
-            'genre_11 selectItem': 'Family', 'genre_24 selectItem': 'Sport',
-            'genre_4 selectItem': 'Thriller', 'genre_1 selectItem': 'Horror',
-            'genre_2 selectItem': 'Fantastic', 'genre_18 selectItem': 'Film-Noir',
-            'genre_5 selectItem': 'Fantasy'
+            '1750 ': 'Anime', '22': 'Biography',
+            '3': 'Action movie', '13': 'Western',
+            '19': 'Military', '17': 'Detective',
+            '456': 'Kids', '12': 'Documentary',
+            '8': 'Drama', '23': 'History',
+            '6': 'Comedy', '15': 'Short film',
+            '16': 'Crime', '7': 'Melodrama',
+            '21': 'Music', '14': 'Cartoon',
+            '9 ': 'Musical', '10': 'Adventure',
+            '11': 'Family', '24': 'Sport',
+            '4': 'Thriller', '1': 'Horror',
+            '2': 'Fantastic', '18': 'Film-Noir',
+            '5': 'Fantasy'
         }
 
 
@@ -63,13 +62,18 @@ class GetRandomMovieData(ParsSettings):
         self.soup = None
 
     def find_user_genre(self, genre):
+        """
+        dict genre: keys == class <li> in HTML || values == genres
+        :return: genre key by user input genre, like: Anime: genre_1750
+        """
+
         for key in self.genres:
             if self.genres[key] == genre:
                 self.user_genre_key = key
                 print("User Input:", user_input)
                 print("Genre Key: ", self.user_genre_key)
                 return self.user_genre_key
-        print("Жанр не найден")
+        print("No Same Gener")
         return None
 
     def get_rnd_movie(self):
@@ -83,18 +87,17 @@ class GetRandomMovieData(ParsSettings):
         self.find_user_genre(user_input)
         self.list.click()
 
-        self.checkbox = self.driver.find_element(By.CLASS_NAME, self.user_genre_key)
-        if self.checkbox:
-            self.user_genre_key = self.user_genre_key
-            self.checkbox.click()
-            self.button.click()
-            self.new_html = self.driver.page_source
-            self.soup = BeautifulSoup(self.new_html, "lxml")
-            self.driver.quit()
-            return self.soup
-        else:
-            print("No Same Genre")
-            return None
+        time.sleep(5)
+        self.driver.find_element(By.XPATH, f"//input[@value='{self.user_genre_key}']").click()
+
+        time.sleep(5)
+        self.button.click()
+
+        self.new_html = self.driver.page_source
+        self.soup = BeautifulSoup(self.new_html, "lxml")
+
+        self.driver.quit()
+        return self.soup
 
     def get_full_rnd_movie_data(self, genre=False):
         self.soup = None
@@ -122,7 +125,9 @@ class GetRandomMovieData(ParsSettings):
 
 
 movie_data = GetRandomMovieData()
-movie_data.get_full_rnd_movie_data(False)
+
+# For now just switch False - for get full random movie and True - for genre random movie
+movie_data.get_full_rnd_movie_data(True)
 
 print("Movie Name:", movie_data.film_name)
 print("Genre:", movie_data.film_genre)
