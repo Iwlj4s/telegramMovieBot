@@ -1,8 +1,9 @@
 import requests
-from selenium import webdriver
-from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
 import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
 
 
 class ParsSettings:
@@ -75,11 +76,11 @@ class Driver(ParsSettings):
         self.find_user_gener(u_genre)
         self.list.click()
 
-        time.sleep(5)
+        time.sleep(1.5)
         print(self.user_genre_key)
         self.driver.find_element(By.XPATH, f"//input[@value='{self.user_genre_key}']").click()
 
-        time.sleep(5)
+        time.sleep(2)
         self.button.click()
 
         self.new_html = self.driver.page_source

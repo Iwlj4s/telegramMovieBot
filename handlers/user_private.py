@@ -1,20 +1,37 @@
+import aiogram
 import emoji
 
 from aiogram import Bot, Dispatcher, F
 from aiogram import types, Router
-from aiogram.filters import CommandStart, Command
+
+from aiogram.filters import CommandStart, Command, StateFilter
+
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
+
 from aiogram.types import Message
 
-from getMovies.main_pars import GetRandomMovieData
+from getMovies.all_movie_info import movie_info
+from getMovies.checks import check_genre
 
 user_private_router = Router()
+
+genres = ['Anime', 'Biography', 'Action movie', 'Western', 'Military', 'Detective', 'Kids', 'Documentary',
+          'Drama', 'History', 'Comedy', 'Short film', 'Crime', 'Melodrama', 'Music', 'Cartoon', 'Musical',
+          'Adventure', 'Family', 'Sport', 'Thriller', 'Horror', 'Fantastic', 'Film-Noir', 'Fantasy']
+genres_str = "\n".join(genres)
+
+
+# FSM
+class get_user_genre(StatesGroup):
+    user_genre = State()
 
 
 # Start Command #
 @user_private_router.message(CommandStart())
 async def cmd_start(message: Message):
-    await message.answer(f"Hi, {message.from_user.first_name}! \nI can send you random movie, just enter /movie command"
-                         f" for get absolute random movie or choose this command in navbar\n"
+    await message.answer(f"Hi, {message.from_user.first_name}! \nEnter /movie command"
+                         f" for get absolute random movie or choose this command in navbar\n \n"
                          f"/genre_movie for choose genre and get random movie from this genre")
 
 
@@ -23,44 +40,49 @@ async def cmd_start(message: Message):
 async def get_rnd_movie(message: Message):
     await message.answer(f"Generation Movie {emoji.emojize(':film_projector:')} {emoji.emojize(':clapper_board:')}...")
 
-    movieData = GetRandomMovieData()
-    movieData.get_movie_data("", False)
+    poster, movie_full_info = movie_info(genre_name="", genre=False)
 
-    movie_name = movieData.film_name
-    movie_genre = movieData.film_genre
-    movie_rating = "IBM: " + movieData.film_rating_imb
-    movie_desc = movieData.film_desc
-
-    movie_full_desc = f"{movie_name} \n \n{movie_genre} \n \n{movie_rating} \n \n{movie_desc}"
-    await message.answer_photo(photo=movieData.poster_img, caption=movie_full_desc)
+    await message.answer_photo(photo=poster, caption=movie_full_info)
 
 
-# Send Genres #
+# Genres Info #
 @user_private_router.message(Command("genres"))
 async def get_genres(message: Message):
-    genres = ['Anime', 'Biography', 'Action movie', 'Western', 'Military', 'Detective', 'Kids', 'Documentary',
-              'Drama', 'History', 'Comedy', 'Short film', 'Crime', 'Melodrama', 'Music', 'Cartoon', 'Musical',
-              'Adventure', 'Family', 'Sport', 'Thriller', 'Horror', 'Fantastic', 'Film-Noir', 'Fantasy']
 
-    genres_str = "Genres:\n" + "\n".join(genres)
-
-    await message.answer(f"{genres_str}")
+    await message.answer(f"Genres:\n{genres_str}")
 
 
 # Random Movie by Selected Genre #
-@user_private_router.message(Command("genre_movie"))
-async def get_genre_rnd_movie(message: Message):
+@user_private_router.message(StateFilter(None), Command("genre_movie"))
+async def get_genre_rnd_movie(message: Message, state: FSMContext):
+    await message.answer("Write movie genre: ")
 
-    user_genre = message.text.split(' ', 1)
+    await state.set_state(get_user_genre.user_genre)
 
-    movieData = GetRandomMovieData()
-    movieData.get_movie_data(user_genre[1].lower(), genre=True)
 
-    movie_name = movieData.film_name
-    movie_genre = movieData.film_genre
-    movie_rating = "IBM: " + movieData.film_rating_imb
-    movie_desc = movieData.film_desc
+# Get user genre #
+@user_private_router.message(get_user_genre.user_genre, F.text)
+async def user_send_genre(message: Message, state: FSMContext):
 
-    movie_full_desc = f"{movie_name} \n \n{movie_genre} \n \n{movie_rating} \n \n{movie_desc}"
+    await state.update_data(user_selected_genre=message.text.lower())
 
-    await message.answer_photo(photo=movieData.poster_img, caption=movie_full_desc)
+    data = await state.get_data()
+    user_selected_genre = data.get("user_selected_genre")
+
+    # User input in genres?
+    if check_genre(user_input_genre=user_selected_genre.lower(), genres=genres_str.lower()):
+
+        await message.answer(f"Selected Genre: {user_selected_genre}")
+        await message.answer(f"Generation Movie {emoji.emojize(':film_projector:')}"
+                             f"{emoji.emojize(':clapper_board:')}...")
+
+        poster, movie_full_info = movie_info(genre_name=str(user_selected_genre), genre=True)
+
+        await message.answer_photo(photo=poster, caption=movie_full_info)
+
+        await state.clear()
+
+    else:
+        await state.clear()
+        await message.answer("Please enter correct genre\n/genres for check genres ")
+

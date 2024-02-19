@@ -5,6 +5,7 @@ import logging
 import os
 
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.strategy import FSMStrategy
 from dotenv import load_dotenv
 
 
