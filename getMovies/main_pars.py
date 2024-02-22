@@ -45,7 +45,8 @@ class Driver(ParsSettings):
 
     def find_user_gener(self, genre):
         """
-        dict genre: keys == value in HTML || values == genres
+
+        :param genre: dict genre, keys == value in HTML || values == genres
         :return: genre key by user input genre, like: Anime: 1750
         """
         print("User input: ", genre)
