@@ -1,9 +1,9 @@
 from aiogram.types import BotCommand
 
 private = [
-    BotCommand(command="movie", description="Random Movie"),
-    BotCommand(command="genre_movie", description="Random Movie By Genre"),
-    BotCommand(command="genres", description="Genres")
+    BotCommand(command="movie", description="Случайный Фильм"),
+    BotCommand(command="genre_movie", description="Случайный Фильм По Жанру"),
+    BotCommand(command="genres", description="Жанры")
 
 ]
 

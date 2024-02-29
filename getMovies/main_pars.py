@@ -15,20 +15,37 @@ class ParsSettings:
         self.driver = webdriver.Chrome()
 
         self.user_genre_key = None
-        self.genres = {
-            '1750': 'anime', '22': 'biography',
-            '3': 'action movie', '13': 'western',
-            '19': 'military', '17': 'detective',
-            '456': 'kids', '12': 'documentary',
-            '8': 'drama', '23': 'history',
-            '6': 'comedy', '15': 'short film',
-            '16': 'crime', '7': 'melodrama',
-            '21': 'music', '14': 'cartoon',
-            '9 ': 'musical', '10': 'adventure',
-            '11': 'family', '24': 'sport',
-            '4': 'thriller', '1': 'horror',
-            '2': 'fantastic', '18': 'film-noir',
-            '5': 'fantasy'
+
+        # self.genres_en = {
+        #     '1750': 'anime', '22': 'biography',
+        #     '3': 'action movie', '13': 'western',
+        #     '19': 'military', '17': 'detective',
+        #     '456': 'kids', '12': 'documentary',
+        #     '8': 'drama', '23': 'history',
+        #     '6': 'comedy', '15': 'short film',
+        #     '16': 'crime', '7': 'melodrama',
+        #     '21': 'music', '14': 'cartoon',
+        #     '9 ': 'musical', '10': 'adventure',
+        #     '11': 'family', '24': 'sport',
+        #     '4': 'thriller', '1': 'horror',
+        #     '2': 'fantastic', '18': 'film-noir',
+        #     '5': 'fantasy'
+        # }
+
+        self.genres_ru = {
+            '1750': 'аниме', '22': 'биография',
+            '3': 'боевик', '13': 'вестерн',
+            '19': 'военный', '17': 'детектив',
+            '456': 'детский', '12': 'документальный',
+            '8': 'драма', '23': 'история',
+            '6': 'комедия', '15': 'короткометражка',
+            '16': 'криминал', '7': 'мелодрама',
+            '21': 'музыка', '14': 'мультфильм',
+            '9 ': 'мьюзикл', '10': 'приключения',
+            '11': 'семейный', '24': 'спорт',
+            '4': 'триллер', '1': 'ужасы',
+            '2': 'фантастика', '18': 'фильм-нуар',
+            '5': 'фэнтези'
         }
 
 
@@ -50,11 +67,12 @@ class Driver(ParsSettings):
         :return: genre key by user input genre, like: Anime: 1750
         """
         print("User input: ", genre)
-        for key in self.genres:
-            if self.genres[key] == genre:
+        for key in self.genres_ru:
+            if self.genres_ru[key] == genre:
                 self.user_genre_key = key
                 print("Genre Key: ", self.user_genre_key)
                 return self.user_genre_key
+
         print("No Same Gener")
         return None
 
@@ -81,7 +99,7 @@ class Driver(ParsSettings):
         print(self.user_genre_key)
         self.driver.find_element(By.XPATH, f"//input[@value='{self.user_genre_key}']").click()
 
-        time.sleep(2)
+        time.sleep(1.5)
         self.button.click()
 
         self.new_html = self.driver.page_source
@@ -138,11 +156,12 @@ class GetRandomMovieData(Driver, ParsSettings):
         self.film_desc_div = self.soup.find("div", class_="syn")
         self.film_desc = self.film_desc_div.text.strip()
 
+
 # movie_data = GetRandomMovieData()
-
-# For now just switch False - for get full random movie and True - for genre random movie
-# movie_data.get_movie_data("Comedy", True)
-
+#
+# # For now just switch False - for get full random movie and True - for genre random movie
+# movie_data.get_movie_data(input("Жанр/Genre: "), True)
+#
 # print("Movie Name:", movie_data.film_name)
 # print("Genre:", movie_data.film_genre)
 # print("Rating:", movie_data.film_rating_imb)

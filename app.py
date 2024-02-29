@@ -5,13 +5,12 @@ import os
 from dotenv import load_dotenv
 
 # Aiogram Imports #
-import aiogram
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommandScopeDefault
 
 # My Imports #
 from handlers.user_private import user_private_router
-from common.bot_commands.bot_commands_list import private
+from bot_commands.bot_commands_list import private
 
 load_dotenv()
 
