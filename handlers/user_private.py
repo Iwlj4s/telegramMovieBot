@@ -43,6 +43,18 @@ async def cmd_start(message: Message):
                          reply_markup=main_keyboard)
 
 
+# Cancel #
+@user_private_router.message(StateFilter("*"), F.text.lower() == "отмена")
+async def cancel_handler(message: Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+
+    await state.clear()
+    await message.answer("Все действия отменены",
+                         reply_markup=main_keyboard)
+
+
 # Genres Info #
 @user_private_router.message(or_f(Command("genres"), (F.text.lower() == "жанры")))
 async def get_genres(message: Message):
