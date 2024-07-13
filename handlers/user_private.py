@@ -15,7 +15,7 @@ from getMovies.all_movie_info import movie_info
 from genres.checks import check_genre
 from genres.genres import get_all_genres
 
-from keyboards.reply import main_keyboard
+from keyboards.reply import main_keyboard, genres_keyboard, yes_no_cancel_keyboard
 
 user_private_router = Router()
 
@@ -23,18 +23,23 @@ genres_ru_str = get_all_genres()
 
 
 # FSM
-class get_user_genre(StatesGroup):
+class GetUserGenre(StatesGroup):
+    user_genres = []
+
     user_genre = State()
+    user_genre_confirm = State()
 
 
 # Start Command #
 @user_private_router.message(CommandStart())
 async def cmd_start(message: Message):
-    await message.answer(f"Привет, {message.from_user.first_name}! \n/genres чтобы посмотреть жанры "
-                         f"или выберите в кнопочном меню 'Жанры' \n \n"
-                         f"/movie Чтобы получить случайный фильм или выберите в кнопочном меню 'Случайный Фильм'\n \n"
-                         f"/genre_movie Чтобы получить случайный фильм по выбранному жанру "
-                         f"или выберите в кнопочном меню 'Случайный Фильм По Жанру'",
+    await message.answer(f"Привет, {message.from_user.first_name}! \n/genres чтобы посмотреть жанры выберите в "
+                         f"кнопочном меню 'Жанры \n"
+                         f"Чтобы получить случайный фильм или выберите в кнопочном меню 'Случайный Фильм'\n"
+                         f"Чтобы получить случайный фильм по выбранному жанру выберите в кнопочном меню 'Случайный "
+                         f"Фильм По Жанру'\n",
+                         f"Чтобы получить случайный фильм по выбранному жанру и доп. выбранными опциями выберите в "
+                         f"кнопочном меню 'Случайный Фильм По Жанру с доп.опциями' ",
                          reply_markup=main_keyboard)
 
 
@@ -51,40 +56,61 @@ async def get_rnd_movie(message: Message):
 
     poster, movie_full_info = movie_info(genre_name="", genre=False)
 
-    await message.answer_photo(photo=poster, caption=movie_full_info)
+    await message.answer_photo(photo=poster, caption=movie_full_info,
+                               reply_markup=main_keyboard)
 
 
 # Random Movie by Selected Genre #
 @user_private_router.message(F.text.lower() == "случайный фильм по жанру")
 @user_private_router.message(StateFilter(None), Command("genre_movie"))
 async def get_genre_rnd_movie(message: Message, state: FSMContext):
-    await message.answer("Введите Жанр: ")
+    await message.answer("Введите Жанр: ",
+                         reply_markup=genres_keyboard)
+    await state.set_state(GetUserGenre.user_genre)
 
-    await state.set_state(get_user_genre.user_genre)
 
-
-# Get user genre #
-@user_private_router.message(get_user_genre.user_genre)
+@user_private_router.message(GetUserGenre.user_genre)
 async def user_send_genre(message: Message, state: FSMContext):
-
-    await state.update_data(user_selected_genre=message.text.lower())
-
     data = await state.get_data()
-    user_selected_genre = data.get("user_selected_genre")
+    user_genres = data.get("user_genres", [])
+    user_genres.append(message.text.lower())
+    await state.update_data(user_genres=user_genres)
 
-    # User input in genres?
-    if check_genre(user_input_genre=user_selected_genre.lower(), genres=genres_ru_str.lower()):
+    await message.answer("Вы хотите добавить еще жанр?",
+                         reply_markup=yes_no_cancel_keyboard)
+    await state.set_state(GetUserGenre.user_genre_confirm)
 
-        await message.answer(f"Выбранный Жанр: {user_selected_genre}")
-        await message.answer(f"Генерация фильма {emoji.emojize(':film_projector:')}"
-                             f"{emoji.emojize(':clapper_board:')}...")
 
-        poster, movie_full_info = movie_info(genre_name=str(user_selected_genre), genre=True)
+@user_private_router.message(GetUserGenre.user_genre_confirm, F.text.lower() == "да")
+async def user_genre_more(message: Message, state: FSMContext):
+    await message.answer("Введите Жанр: ",
+                         reply_markup=genres_keyboard)
+    await state.set_state(GetUserGenre.user_genre)
 
-        await message.answer_photo(photo=poster, caption=movie_full_info)
 
-        await state.clear()
+@user_private_router.message(GetUserGenre.user_genre_confirm, F.text.lower() == "нет")
+async def user_genre_done(message: Message, state: FSMContext):
+    data = await state.get_data()
+    user_genres = data.get("user_genres", [])
 
+    print(f"User input genres: {user_genres}")
+    print(f"Available genres: {genres_ru_str.lower()}")
+
+    valid_genres = [genre for genre in user_genres if check_genre(user_input_genre=genre, genres=genres_ru_str.lower())]
+
+    print(f"Valid genres: {valid_genres}")
+
+    if valid_genres:
+        await message.answer(f"Выбранные Жанры: {','.join(valid_genres)}")
+        await message.answer(
+            f"Генерация фильма {emoji.emojize(':clapper_board:')} ...")
+
+        poster, movie_full_info = movie_info(genre_name=','.join(valid_genres), genre=True)
+
+        await message.answer_photo(photo=poster, caption=movie_full_info,
+                                   reply_markup=main_keyboard)
     else:
-        await state.clear()
-        await message.answer(f"{message.from_user.first_name}, введите корректный жанр\n/genres чтобы посмотреть жанры")
+        await message.answer(
+            f"{message.from_user.first_name}, введите корректные жанры\n/genres чтобы посмотреть жанры")
+
+    await state.clear()

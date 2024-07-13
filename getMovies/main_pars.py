@@ -14,7 +14,7 @@ class ParsSettings:
         self.response = requests.get(self.url)
         self.driver = webdriver.Chrome()
 
-        self.user_genre_key = None
+        self.user_genre_key = []
 
         # self.genres_en = {
         #     '1750': 'anime', '22': 'biography',
@@ -54,27 +54,27 @@ class Driver(ParsSettings):
         super().__init__()
         self.driver.get(self.url)
 
-        self.list = self.driver.find_element(By.ID, "genreListTitle")
+        self.genre_list = self.driver.find_element(By.ID, "genreListTitle")
+        self.country_list = self.driver.find_element(By.ID, "countryListTitle")
         self.button = self.driver.find_element(By.CLASS_NAME, "button")
 
         self.new_html = None
         self.soup = None
 
-    def find_user_gener(self, genre):
+    def find_user_gener(self, genres):
         """
 
-        :param genre: dict genre, keys == value in HTML || values == genres
+        :param genres: dict genre, keys == value in HTML || values == genres
         :return: genre key by user input genre, like: Anime: 1750
         """
-        print("User input: ", genre)
-        for key in self.genres_ru:
-            if self.genres_ru[key] == genre:
-                self.user_genre_key = key
-                print("Genre Key: ", self.user_genre_key)
-                return self.user_genre_key
-
-        print("No Same Gener")
-        return None
+        print("User input: ", genres)
+        for genre in genres:
+            genre = genre.strip()
+            for key in self.genres_ru:
+                if self.genres_ru[key] == genre:
+                    self.user_genre_key.append(key)
+        print("Genre Keys: ", self.user_genre_key)
+        return self.user_genre_key
 
     def get_rnd_movie(self):
         """
@@ -87,19 +87,21 @@ class Driver(ParsSettings):
         self.driver.quit()
         return self.soup
 
-    def get_rnd_gener_movie(self, u_genre):
+    def get_rnd_gener_movie(self, u_genres):
         """
         u_gener => find_user_gener(gener)
         :return new HTML page with movie
         """
-        self.find_user_gener(u_genre)
-        self.list.click()
+        self.find_user_gener(u_genres)
+        self.genre_list.click()
 
-        time.sleep(1.5)
+        time.sleep(3)
         print(self.user_genre_key)
-        self.driver.find_element(By.XPATH, f"//input[@value='{self.user_genre_key}']").click()
+        for key in self.user_genre_key:
+            self.driver.find_element(By.XPATH, f"//input[@value='{key}']").click()
+            time.sleep(5)
+        time.sleep(5)
 
-        time.sleep(1.5)
         self.button.click()
 
         self.new_html = self.driver.page_source
@@ -160,9 +162,9 @@ class GetRandomMovieData(Driver, ParsSettings):
 # movie_data = GetRandomMovieData()
 #
 # # For now just switch False - for get full random movie and True - for genre random movie
-# movie_data.get_movie_data(input("Жанр/Genre: "), True)
-#
-# print("Movie Name:", movie_data.film_name)
-# print("Genre:", movie_data.film_genre)
-# print("Rating:", movie_data.film_rating_imb)
-# print("Description:", movie_data.film_desc)
+# # movie_data.get_movie_data(input("Жанры/Genres (через запятую): ").split(','), True)
+# #
+# # print("Movie Name:", movie_data.film_name)
+# # print("Genre:", movie_data.film_genre)
+# # print("Rating:", movie_data.film_rating_imb)
+# # print("Description:", movie_data.film_desc)
