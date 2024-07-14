@@ -5,7 +5,6 @@ main_keyboard = ReplyKeyboardMarkup(
         [
             KeyboardButton(text="Случайный Фильм"),
             KeyboardButton(text="Случайный Фильм По Жанру"),
-            KeyboardButton(text="Случайный Фильм По Жанру с доп.опциями"),
             KeyboardButton(text="Жанры")
         ],
     ],

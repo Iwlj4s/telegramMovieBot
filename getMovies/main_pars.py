@@ -15,22 +15,7 @@ class ParsSettings:
         self.driver = webdriver.Chrome()
 
         self.user_genre_key = []
-
-        # self.genres_en = {
-        #     '1750': 'anime', '22': 'biography',
-        #     '3': 'action movie', '13': 'western',
-        #     '19': 'military', '17': 'detective',
-        #     '456': 'kids', '12': 'documentary',
-        #     '8': 'drama', '23': 'history',
-        #     '6': 'comedy', '15': 'short film',
-        #     '16': 'crime', '7': 'melodrama',
-        #     '21': 'music', '14': 'cartoon',
-        #     '9 ': 'musical', '10': 'adventure',
-        #     '11': 'family', '24': 'sport',
-        #     '4': 'thriller', '1': 'horror',
-        #     '2': 'fantastic', '18': 'film-noir',
-        #     '5': 'fantasy'
-        # }
+        self.user_country_key = []
 
         self.genres_ru = {
             '1750': 'аниме', '22': 'биография',
@@ -48,6 +33,20 @@ class ParsSettings:
             '5': 'фэнтези'
         }
 
+        self.countries_ru = {
+            '2': 'россия', '1': 'сша',
+            '13': 'ссср', '25': 'австралия',
+            '41': 'бельгия', '11': 'великобритания',
+            '3': 'германия', '18': 'германия (фрг)',
+            '28': 'гонконг', '4': 'дания',
+            '29': 'индия', '15': 'испания',
+            '14': 'италия', '6': 'канада',
+            '31': 'китай', '26': 'корея южная',
+            '17': 'мексика', '8': 'франция',
+            '5': 'швеция', '9': 'япония'
+
+        }
+
 
 class Driver(ParsSettings):
     def __init__(self):
@@ -56,25 +55,38 @@ class Driver(ParsSettings):
 
         self.genre_list = self.driver.find_element(By.ID, "genreListTitle")
         self.country_list = self.driver.find_element(By.ID, "countryListTitle")
-        self.button = self.driver.find_element(By.CLASS_NAME, "button")
+        self.button = self.driver.find_element(By.ID, "search")
 
         self.new_html = None
         self.soup = None
 
-    def find_user_gener(self, genres):
+    def find_user_gener(self, u_genres):
         """
 
-        :param genres: dict genre, keys == value in HTML || values == genres
+        :param u_genres:
         :return: genre key by user input genre, like: Anime: 1750
         """
-        print("User input: ", genres)
-        for genre in genres:
+        print("User genres:", u_genres)
+        for genre in u_genres:
             genre = genre.strip()
             for key in self.genres_ru:
                 if self.genres_ru[key] == genre:
                     self.user_genre_key.append(key)
         print("Genre Keys: ", self.user_genre_key)
         return self.user_genre_key
+
+    def find_user_country(self, u_countries):
+
+        print("User country: ", u_countries)
+
+        for country in u_countries:
+            country = country.strip()
+            for key in self.countries_ru:
+                if self.countries_ru[key] == country:
+                    self.user_country_key.append(key)
+
+        print("Countries Keys: ", self.user_country_key)
+        return self.user_country_key
 
     def get_rnd_movie(self):
         """
@@ -87,20 +99,42 @@ class Driver(ParsSettings):
         self.driver.quit()
         return self.soup
 
-    def get_rnd_gener_movie(self, u_genres):
+    def select_user_genre(self, u_genres):
+        self.find_user_gener(u_genres)
+        self.genre_list.click()
+        print(self.user_genre_key)
+        for key in self.user_genre_key:
+            li = "genre_" + key
+            print("full genre li tag: ", li)
+            self.driver.execute_script(f"document.querySelector('li.{li} label input[value=\"{key}\"]').click()")
+            time.sleep(1)
+
+        time.sleep(1)
+
+    def select_user_country(self, u_country):
+        self.find_user_country(u_country)
+
+        self.country_list.click()
+        print(self.user_country_key)
+        for key in self.user_country_key:
+            li = "country_" + key
+            print("full country li tag: ", li)
+            self.driver.execute_script(f"document.querySelector('li.{li} label input[value=\"{key}\"]').click()")
+            time.sleep(1)
+        time.sleep(1)
+
+    def get_rnd_gener_movie(self, u_genres, u_country):
         """
         u_gener => find_user_gener(gener)
         :return new HTML page with movie
         """
-        self.find_user_gener(u_genres)
-        self.genre_list.click()
 
-        time.sleep(3)
-        print(self.user_genre_key)
-        for key in self.user_genre_key:
-            self.driver.find_element(By.XPATH, f"//input[@value='{key}']").click()
-            time.sleep(5)
-        time.sleep(5)
+        self.select_user_genre(u_genres=u_genres)
+
+        time.sleep(2)
+
+        self.select_user_country(u_country=u_country)
+        time.sleep(1)
 
         self.button.click()
 
@@ -130,8 +164,9 @@ class GetRandomMovieData(Driver, ParsSettings):
         self.film_desc_div = None
         self.film_desc = None
 
-    def get_movie_data(self, user_gener, genre=False):
+    def get_movie_data(self, user_gener, user_country, genre=False):
         """
+        :param user_country:
         :param user_gener:  => get_rnd_gener_movie(u_gener)
         :param genre: If false: get random movie with random genre Else: get random movie with selected genre
         """
@@ -140,7 +175,7 @@ class GetRandomMovieData(Driver, ParsSettings):
         if not genre:
             self.soup = self.get_rnd_movie()
         elif genre:
-            self.soup = self.get_rnd_gener_movie(user_gener)
+            self.soup = self.get_rnd_gener_movie(user_gener, user_country)
 
         self.poster_div = self.soup.find("div", class_="poster")
         self.poster_img_href = self.poster_div.find("img")["src"]
@@ -159,12 +194,14 @@ class GetRandomMovieData(Driver, ParsSettings):
         self.film_desc = self.film_desc_div.text.strip()
 
 
-# movie_data = GetRandomMovieData()
-#
-# # For now just switch False - for get full random movie and True - for genre random movie
-# # movie_data.get_movie_data(input("Жанры/Genres (через запятую): ").split(','), True)
-# #
-# # print("Movie Name:", movie_data.film_name)
-# # print("Genre:", movie_data.film_genre)
-# # print("Rating:", movie_data.film_rating_imb)
-# # print("Description:", movie_data.film_desc)
+movie_data = GetRandomMovieData()
+
+# For now just switch False - for get full random movie and True - for genre random movie
+genres = input("Жанры/Genres (через запятую): ").split(',')
+countries = input("Страны (через запятую): ").split(',')
+movie_data.get_movie_data(user_gener=genres, user_country=countries, genre=True)
+
+print("Movie Name:", movie_data.film_name)
+print("Genre:", movie_data.film_genre)
+print("Rating:", movie_data.film_rating_imb)
+print("Description:", movie_data.film_desc)
