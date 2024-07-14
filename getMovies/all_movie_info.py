@@ -1,9 +1,10 @@
 from getMovies.main_pars import GetRandomMovieData
 
 
-def movie_info(genre_name: str, genre: bool):
+def movie_info(genre_name: str, country_name: str, genre: bool):
     movieData = GetRandomMovieData()
-    movieData.get_movie_data(genre_name.split(','), genre)
+    movieData.get_movie_data(user_gener=genre_name.split(','),
+                             user_country=country_name.split(','), genre=genre)
 
     print(f"Received genre_name: {genre_name}, genre: {genre}")
 

@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0b98b07e-6d08-4ae1-b165-49363915781e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/util/checks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot_commands/bot_commands_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_commands/bot_commands_list.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genres/checks.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/genres/genres.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/get_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getMovies/all_movie_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/getMovies/all_movie_info.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/getMovies/main_pars.py" beforeDir="false" afterPath="$PROJECT_DIR$/getMovies/main_pars.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handlers/user_private.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/user_private.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/keyboards/reply.py" beforeDir="false" afterPath="$PROJECT_DIR$/keyboards/reply.py" afterDir="false" />
