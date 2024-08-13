@@ -7,14 +7,14 @@ from bs4 import BeautifulSoup
 
 
 class ParsSettings:
-    def __init__(self): 
-        self.url = "https://www.kinopoisk.ru/chance/"   # main page
-        self.url_for_img = "https://www.kinopoisk.ru/" # url for get movie's poster img
+    def __init__(self):
+        self.url = "https://www.kinopoisk.ru/chance/"  # main page
+        self.url_for_img = "https://www.kinopoisk.ru/"  # url for get movie's poster img
 
-        self.response = requests.get(self.url) 
+        self.response = requests.get(self.url)
         self.driver = webdriver.Chrome()
 
-        self.user_genre_key = [] 
+        self.user_genre_key = []
         self.user_country_key = []
 
         self.genres_ru = {
@@ -53,13 +53,13 @@ class Driver(ParsSettings):
         super().__init__()
         self.driver.get(self.url)
 
-        self.genre_list = self.driver.find_element(By.ID, "genreListTitle") # genre select list
-        self.country_list = self.driver.find_element(By.ID, "countryListTitle") # country select list
+        self.genre_list = self.driver.find_element(By.ID, "genreListTitle")  # genre select list
+        self.country_list = self.driver.find_element(By.ID, "countryListTitle")  # country select list
 
-        self.button = self.driver.find_element(By.ID, "search") # get movie button
+        self.button = self.driver.find_element(By.ID, "search")  # get movie button
 
-        self.new_html = None   # new HTML page with movie
-        self.soup = None # soup object
+        self.new_html = None  # new HTML page with movie
+        self.soup = None  # soup object
 
     def find_user_gener(self, u_genres):
         """
@@ -208,7 +208,6 @@ class GetRandomMovieData(Driver, ParsSettings):
 
         self.film_desc_div = self.soup.find("div", class_="syn")
         self.film_desc = self.film_desc_div.text.strip()
-
 
 # movie_data = GetRandomMovieData()
 

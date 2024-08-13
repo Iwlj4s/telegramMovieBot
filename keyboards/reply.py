@@ -65,6 +65,7 @@ countries_keyboard = ReplyKeyboardMarkup(
             KeyboardButton(text="Бельгия"),
             KeyboardButton(text="Великобритания"),
             KeyboardButton(text="Германия"),
+            KeyboardButton(text="Дания"),
         ],
 
         [
