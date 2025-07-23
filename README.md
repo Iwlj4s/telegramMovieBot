@@ -113,10 +113,12 @@ This behavior is inherent to Kinopoisk's system and not a limitation of the bot 
 
    
    * **Generate movie? (we choose yes)**
-   <img width="1060" height="904" alt="image" src="https://github.com/user-attachments/assets/91d8cac1-2c42-482a-ab04-1ea3f59402af" />
+<img width="1050" height="831" alt="image" src="https://github.com/user-attachments/assets/ad7efd65-967a-4385-b1f3-d2007c4d0e87" />
 
 
    * **Result**
-   ![gg15.png](git_img/gg15.png)
+   <img width="1050" height="831" alt="image" src="https://github.com/user-attachments/assets/7638435c-58e4-459f-967b-53ead08a28ba" />
+
+
 
 
