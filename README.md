@@ -59,48 +59,62 @@ This behavior is inherent to Kinopoisk's system and not a limitation of the bot 
 4. The bot uses the selections to query the Kinopoisk parser and return movie information
 
 ## Bot Interface Examples
-![gg1.png](git_img/gg1.png)
+<img width="1153" height="446" alt="image" src="https://github.com/user-attachments/assets/0bfbe3b1-386c-4099-af71-31ed2f0203bd" />
+
 
 ### 1. Random Movie Selection
-![gg2.png](git_img/gg2.png)
+<img width="1097" height="821" alt="image" src="https://github.com/user-attachments/assets/49dad3ff-f284-4256-a908-367fdccc3d60" />
+
 
 ### 2. Movie Selection with Chosen Genre (No Country Specified)
 
    * **Movie by genre button**
-      ![gg3.png](git_img/gg3.png)
+      <img width="847" height="182" alt="image" src="https://github.com/user-attachments/assets/4b0dd4ed-1988-4c31-af40-b66eee8bfc7a" />
+
    
    * **Choose genre/genres**
-   ![gg4.png](git_img/gg4.png)
+   <img width="1189" height="908" alt="image" src="https://github.com/user-attachments/assets/013d5d23-ce45-4693-b71c-29391b79e37d" />
+
 
       Do you want to choose one more genre? (We choose yes)
-      ![gg5.png](git_img/gg5.png)
+      <img width="1077" height="764" alt="image" src="https://github.com/user-attachments/assets/b60d3c49-21c7-414e-82f8-ad0cb8b1b9d0" />
+
 
    * **Choose country/countries (we skip it)**
-   ![gg6.png](git_img/gg6.png)
+   <img width="1096" height="897" alt="image" src="https://github.com/user-attachments/assets/9535b209-29cf-416b-bea4-3f837c75c586" />
+
    
    * **Generate movie? (we choose yes)**
-   ![gg7.png](git_img/gg7.png)
+   <img width="1149" height="903" alt="image" src="https://github.com/user-attachments/assets/da92884b-4260-4816-be3a-a2db35ed3d0d" />
+
 
    * **Result**
-   ![gg8.png](git_img/gg8.png)
+   <img width="1165" height="830" alt="image" src="https://github.com/user-attachments/assets/35fe70c2-9f17-4a6f-b976-834bca26565a" />
+
 
 
 ### 3. Movie Selection with Chosen Genre and Country
    * **Movie by genre button**
-      ![gg9.png](git_img/gg9.png)
+      <img width="963" height="391" alt="image" src="https://github.com/user-attachments/assets/3a8c8fd4-fda8-40ed-aa8a-46db38d79470" />
+
    
    * **Choose genre/genres**
-   ![gg10.png](git_img/gg10.png)
+   <img width="907" height="487" alt="image" src="https://github.com/user-attachments/assets/abcc1996-d3ec-4065-a782-525e239a9558" />
+
       Do you want to choose one more genre? (We choose yes)
-      ![gg11.png](git_img/gg11.png)
+      <img width="1035" height="696" alt="image" src="https://github.com/user-attachments/assets/a2090f2f-bb12-469d-baaf-b4153e41d039" />
+
 
    * **Choose country/countries**
-   ![gg12.png](git_img/gg12.png)
+   <img width="982" height="751" alt="image" src="https://github.com/user-attachments/assets/9afb62ae-70d4-4cb9-9e80-289a83565ca1" />
+
       Do you want to choose one more country? (We choose yes)
-      ![gg13.png](git_img/gg13.png)
+      <img width="1033" height="661" alt="image" src="https://github.com/user-attachments/assets/67849c02-a0b2-4a8d-a802-273680c41608" />
+
    
    * **Generate movie? (we choose yes)**
-   ![gg14.png](git_img/gg14.png)
+   <img width="1060" height="904" alt="image" src="https://github.com/user-attachments/assets/91d8cac1-2c42-482a-ab04-1ea3f59402af" />
+
 
    * **Result**
    ![gg15.png](git_img/gg15.png)
