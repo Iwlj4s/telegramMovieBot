@@ -102,15 +102,15 @@ This behavior is inherent to Kinopoisk's system and not a limitation of the bot 
    * **Choose genre/genres**
    <img width="907" height="487" alt="image" src="https://github.com/user-attachments/assets/abcc1996-d3ec-4065-a782-525e239a9558" />
 
-      Do you want to choose one more genre? (We choose yes)
+   * **Do you want to choose one more genre? (We choose yes)**
    <img width="1033" height="661" alt="image" src="https://github.com/user-attachments/assets/67849c02-a0b2-4a8d-a802-273680c41608" />
 
 
    * **Choose country/countries**
    <img width="982" height="751" alt="image" src="https://github.com/user-attachments/assets/9afb62ae-70d4-4cb9-9e80-289a83565ca1" />
 
-      Do you want to choose one more country? (We choose yes)
-      <img width="1033" height="661" alt="image" src="https://github.com/user-attachments/assets/67849c02-a0b2-4a8d-a802-273680c41608" />
+   * **Do you want to choose one more country? (We choose yes)**
+   <img width="1033" height="661" alt="image" src="https://github.com/user-attachments/assets/67849c02-a0b2-4a8d-a802-273680c41608" />
 
    
    * **Generate movie? (we choose yes)**
