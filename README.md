@@ -102,7 +102,7 @@ This behavior is inherent to Kinopoisk's system and not a limitation of the bot 
    <img width="907" height="487" alt="image" src="https://github.com/user-attachments/assets/abcc1996-d3ec-4065-a782-525e239a9558" />
 
       Do you want to choose one more genre? (We choose yes)
-      <img width="1035" height="696" alt="image" src="https://github.com/user-attachments/assets/a2090f2f-bb12-469d-baaf-b4153e41d039" />
+   <img width="1033" height="661" alt="image" src="https://github.com/user-attachments/assets/67849c02-a0b2-4a8d-a802-273680c41608" />
 
 
    * **Choose country/countries**
