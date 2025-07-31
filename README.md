@@ -76,11 +76,12 @@ This behavior is inherent to Kinopoisk's system and not a limitation of the bot 
    <img width="1189" height="908" alt="image" src="https://github.com/user-attachments/assets/013d5d23-ce45-4693-b71c-29391b79e37d" />
 
 
-      Do you want to choose one more genre? (We choose yes)
-      <img width="1077" height="764" alt="image" src="https://github.com/user-attachments/assets/b60d3c49-21c7-414e-82f8-ad0cb8b1b9d0" />
+   * **Do you want to choose one more genre? (We choose yes)(we skip it)**
+   <img width="1077" height="764" alt="image" src="https://github.com/user-attachments/assets/b60d3c49-21c7-414e-82f8-ad0cb8b1b9d0" />
 
 
    * **Choose country/countries (we skip it)**
+   
    <img width="1096" height="897" alt="image" src="https://github.com/user-attachments/assets/9535b209-29cf-416b-bea4-3f837c75c586" />
 
    
